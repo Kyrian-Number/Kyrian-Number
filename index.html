@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-       <title>Kyrian Number</title>       
-       <link rel="stylesheet" href="style.css">
-   </head>
-   <body>
+    <head>
+        <title>Kyrian Number</title>       
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
     <div class="container">
         <nav class="navigation">
             <a href="index.html">Home</a>
@@ -15,7 +15,9 @@
         <header>
             <h1>Welcome!</h1>
         </header>
-
+        
+        <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+</fb:login-button>
 
         <main>
             <p id="introduction">
@@ -25,5 +27,8 @@
             
         </main>
     <!-- <script src="js/index.js"></script> -->
-   </body>
+    </body>
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v11.0&appId=201530738067216&autoLogAppEvents=1" nonce="IBJCrVYj"></script>
+    <script src="login.js"></script>
 </html>
