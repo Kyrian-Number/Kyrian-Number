@@ -11,6 +11,7 @@ function checkLoginState() {               // Called when a person is finished w
     FB.getLoginStatus(function(response) {   // See the onlogin handler
         statusChangeCallback(response);
     });
+}
 
 function statusChangeCallback(response) {  // Called with the results from FB.getLoginStatus().
     console.log('statusChangeCallback');
@@ -28,7 +29,9 @@ window.fbAsyncInit = function() {
     xfbml      : true,
     version    : 'v11.0'
     });
+
     FB.AppEvents.logPageView();
+    
     FB.getLoginStatus(function(response) {   // Called after the JS SDK has been initialized.
         statusChangeCallback(response);        // Returns the login status.
     });
