@@ -3,7 +3,7 @@ function testAPI() {                      // Testing Graph API after login.  See
     FB.api(
         '/me',
         'GET',
-        {"fields":"id,name,first_name,last_name,friends{hometown, name},hometown"},
+        {"fields":"id,name,first_name,last_name,friends{hometown,short_name},hometown"},
         function(response) {
             console.log(response);
         }
