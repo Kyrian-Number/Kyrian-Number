@@ -1,14 +1,13 @@
 function testAPI() {                      // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
     console.log('Welcome!  Fetching your information.... ');
-    FB.api('/me',
+    FB.api(
+        '/me',
         'GET',
-        {"fields":"id,name,first_name,last_name,friends{hometown, name},hometown"},
+        {"fields":"id,name,first_name,last_name,hometown,friends{hometown, name}"},
         function(response) {
-        console.log(response);
-        console.log('Successful login for: ' + response.name);
-        document.getElementById('status').innerHTML =
-            'Thanks for logging in, ' + response.name + '!';
-    });
+            console.log(response);
+        }
+    );
 }
 
 function checkLoginState() {               // Called when a person is finished with the Login Button.
