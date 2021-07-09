@@ -2,7 +2,7 @@ function testAPI() {                      // Testing Graph API after login.  See
     console.log('Welcome!  Fetching your information.... ');
     FB.api('/me',
         'GET',
-        {"fields":"id,name,first_name,last_name,friends{hometown, name}"},
+        {"fields":"id,name,first_name,last_name,friends{hometown, name},hometown"},
         function(response) {
         console.log(response);
         console.log('Successful login for: ' + response.name);
