@@ -8,11 +8,13 @@ document, body {
 
 /* Container */
 
-
+.container {
+    display:
+}
 
 p {
-    /* display: flex; */
-    /* flex-direction: row; */
+    display: flex;
+    flex-direction: row;
     flex-wrap: nowrap;
     padding: 50px;
     text-align: center;
@@ -25,7 +27,7 @@ h3 {
 }
 
 * {
-    outline: 1px solid red !important;
+    outline: 5px solid purple !important;
  }
 
 
