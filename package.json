@@ -1,0 +1,22 @@
+{
+  "name": "kyrian-number",
+  "version": "1.0.0",
+  "description": "",
+  "main": "login.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kyrian-Number/Kyrian-Number.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kyrian-Number/Kyrian-Number/issues"
+  },
+  "homepage": "https://github.com/Kyrian-Number/Kyrian-Number#readme",
+  "dependencies": {
+    "googleapis": "^82.0.0"
+  }
+}
