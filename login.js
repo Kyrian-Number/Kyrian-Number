@@ -1,4 +1,4 @@
-import { test } from './data.js'
+// import { test } from './data.js'
 
 function testAPI() {                      // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
     console.log('Welcome!  Fetching your information.... ');
