@@ -1,8 +1,10 @@
 var http = require('http'),
     fs = require('fs'),
 	express = require('express'),
-	app = express();
+	app = express(),
+    path = require('path');
 
+app.use(express.static(path.join(__dirname, '/')));
 
 fs.readFile('./index.html', function (err, html) {
     if (err) {
