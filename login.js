@@ -1,3 +1,5 @@
+import * as d from "./data.js"
+
 function testAPI() {                      // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
     console.log('Welcome!  Fetching your information.... ');
     FB.api(
@@ -47,3 +49,9 @@ window.fbAsyncInit = function() {
     js.src = "https://connect.facebook.net/en_US/sdk.js";
     fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
+
+const test = () => {
+    let u = document.getElementById("u").value;
+    let f = document.getElementById("f").value;
+    d.insertData(u,f);
+}
