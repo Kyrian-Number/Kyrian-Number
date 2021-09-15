@@ -5,9 +5,9 @@ const { google } = require('googleapis');
 const sheets = google.sheets('v4');
 
 class OFFSET {
-    static NAME = 1;
-    static HOMETOWN = 2;
-    static FRIENDS = 3;
+    static NAME = { NUM: 1, LETTER: 'B' };
+    static HOMETOWN = { NUM: 2, LETTER: 'C' };
+    static FRIENDS = { NUM: 3, LETTER: 'D' };
 }
 
 app.use(express.static(path.join(__dirname, '/')));
@@ -109,7 +109,7 @@ async function getFriends(id) {
     const req = {
         auth: jwtClient,
         spreadsheetId: process.env.SPREADSHEET_ID,
-        range: "Sheet1!B"+index+":CGY"+index,
+        range: "Sheet1!"+OFFSET.FRIENDS.LETTER+index+":CGY"+index,
         majorDimension: "ROWS"
     };
     try {
@@ -137,8 +137,8 @@ async function removeUserFromFriendsList(id, friends) {
                                 sheetId: 0,
                                 startRowIndex: row,
                                 endRowIndex: row+1,
-                                startColumnIndex: col+OFFSET.FRIENDS,
-                                endColumnIndex: col+OFFSET.FRIENDS+1
+                                startColumnIndex: col+OFFSET.FRIENDS.NUM,
+                                endColumnIndex: col+OFFSET.FRIENDS.NUM+1
                             },
                             shiftDimension: "COLUMNS"
                         }
