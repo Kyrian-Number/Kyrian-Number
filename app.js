@@ -1,10 +1,14 @@
-var http = require('http'),
-    fs = require('fs'),
-	express = require('express'),
-	app = express(),
-    path = require('path');
+const express = require('express');
+const app = express();
+const path = require('path');
 const { google } = require('googleapis');
 const sheets = google.sheets('v4');
+
+class OFFSET {
+    static NAME = 1;
+    static HOMETOWN = 2;
+    static FRIENDS = 3;
+}
 
 app.use(express.static(path.join(__dirname, '/')));
 app.use(express.json());
@@ -15,11 +19,13 @@ app.get("/", (req, res) => {
     res.sendFile(__dirname + "/index.html");
 });
 
-app.post('/index', async (req, res) => {
-    // console.log(req.body);
-    // // let result = await getFriends(req.body.u);
-    // console.log(await deleteData(req.body.u), 'done');
+app.post('/fb-login', async (req, res) => {
+    await updateData(req.body.id, req.body.name, req.body.hometown.name, req.body.friends.data.map(e => e.id));
 });
+
+app.post('/user-deletion', async (req, res) => {
+    await deleteData(req.body.id);
+})
 
 // configure a JWT auth client
 let jwtClient = new google.auth.JWT(
@@ -35,10 +41,9 @@ jwtClient.authorize((err, tokens) => {
 });
 
 /*
-    returns: [user ids]
+    returns: [fb ids]
 */
 async function getUsers() {
-    setTimeout(() => { return; }, 1000);
     const req = {
         auth: jwtClient,
         spreadsheetId: process.env.SPREADSHEET_ID,
@@ -59,9 +64,9 @@ async function getUsers() {
     returns: (int) index if found, -1 otherwise
     reminder: index is 0-based, spreadsheets are 1-based
 */
-async function findUser(user) {
+async function findUser(id) {
     const res = await getUsers();
-    return res.findIndex(e => e == user);
+    return res.findIndex(e => e == id);
 }
 
 /*
@@ -70,15 +75,15 @@ async function findUser(user) {
         friends : [fb id]
     returns: n/a
 */
-async function updateData(user, friends) {
-    const index = await findUser(user) + 1;
+async function updateData(id, name, hometown, friends) {
+    const index = await findUser(id) + 1;
     if (index === 0) {
         sheets.spreadsheets.values.append({
             auth: jwtClient,
             spreadsheetId: process.env.SPREADSHEET_ID,
             range: "Sheet1",
             valueInputOption: "RAW",
-            resource: {values: [[user, ...friends]]} // later add back .join at the end, this is just for testing purposes
+            resource: {values: [[id, name, hometown, ...friends]]}
         }, (err, result) => {
             if (err) console.error('INSERTION ERROR (NEW USER):\n', err);
             return;
@@ -89,7 +94,7 @@ async function updateData(user, friends) {
             spreadsheetId: process.env.SPREADSHEET_ID,
             range: "Sheet1!A"+index,
             valueInputOption: "RAW",
-            resource: {values: [[user, ...friends]]} // ditto
+            resource: {values: [[id, name, hometown, ...friends]]} // ditto
         }, (err, result) => {
             if (err) console.error('INSERTION ERROR (EXISTING USER):\n', err);
             return;
@@ -97,10 +102,10 @@ async function updateData(user, friends) {
     }
 }
 
-async function getFriends(user) {
+async function getFriends(id) {
     // CGY (alphabetical base-26) == 2236 (base 10)
     // the cap for # friends is 5000, but most people will not have that many
-    const index = await findUser(user) + 1;
+    const index = await findUser(id) + 1;
     const req = {
         auth: jwtClient,
         spreadsheetId: process.env.SPREADSHEET_ID,
@@ -116,11 +121,11 @@ async function getFriends(user) {
     }
 }
 
-async function removeUserFromFriendsList(user, friends) {
-    for (let friend of friends) {
-        let row = await findUser(friend); // assumably exists
-        let friendFriends = await getFriends(friend);
-        let col = friendFriends.findIndex(e => e == user);
+async function removeUserFromFriendsList(id, friends) {
+    for (let friendId of friends) {
+        let row = await findUser(friendId); // assumably exists
+        let friendFriends = await getFriends(friendId);
+        let col = friendFriends.findIndex(e => e == id);
         sheets.spreadsheets.batchUpdate({
             auth: jwtClient,
             spreadsheetId: process.env.SPREADSHEET_ID,
@@ -132,8 +137,8 @@ async function removeUserFromFriendsList(user, friends) {
                                 sheetId: 0,
                                 startRowIndex: row,
                                 endRowIndex: row+1,
-                                startColumnIndex: col+1,
-                                endColumnIndex: col+2
+                                startColumnIndex: col+OFFSET.FRIENDS,
+                                endColumnIndex: col+OFFSET.FRIENDS+1
                             },
                             shiftDimension: "COLUMNS"
                         }
@@ -147,8 +152,8 @@ async function removeUserFromFriendsList(user, friends) {
     }
 }
 
-async function removeUserFromSheets(user) {
-    const index = await findUser(user);
+async function removeUserFromSheets(id) {
+    const index = await findUser(id);
     sheets.spreadsheets.batchUpdate({
         auth: jwtClient,
         spreadsheetId: process.env.SPREADSHEET_ID,
@@ -174,9 +179,9 @@ async function removeUserFromSheets(user) {
     });
 }
 
-async function deleteData(user) {
-    if (await findUser(user) !== -1) {
-        await removeUserFromFriendsList(user, await getFriends(user));
-        await removeUserFromSheets(user);
+async function deleteData(id) {
+    if (await findUser(id) !== -1) {
+        await removeUserFromFriendsList(id, await getFriends(id));
+        await removeUserFromSheets(id);
     }
 }

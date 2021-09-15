@@ -5,9 +5,38 @@ function testAPI() {                      // Testing Graph API after login.  See
     FB.api(
         '/me',
         'GET',
-        {"fields":"id,name,first_name,last_name,friends{hometown,short_name},hometown"},
-        function(response) {
-            console.log(response);
+        {"fields":"id,name,first_name,last_name,friends,hometown"},
+        function(res) {
+            // let data = { res };
+            let options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(res)
+            };
+            fetch('/fb-login', options);
+            console.log(res);
+        }
+    );
+}
+
+function userDeletion() {
+    FB.api(
+        '/me',
+        'GET',
+        {"fields":"id"},
+        function(res) {
+            // let data = { res };
+            let options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(res)
+            };
+            fetch('/user-deletion', options);
+            console.log(res);
         }
     );
 }
@@ -50,17 +79,18 @@ window.fbAsyncInit = function() {
     fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
 
-const test = () => {
-    let u = document.getElementById("u").value;
-    let f = document.getElementById("f").value;
-    let data = { u, f };
-    let options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    };
-    fetch('/index', options);
-}
-document.querySelector('button#test').addEventListener('click', test);
+// const test = () => {
+//     let u = document.getElementById("u").value;
+//     let f = document.getElementById("f").value;
+//     let data = { u, f };
+//     let options = {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify(data)
+//     };
+//     fetch('/index', options);
+// }
+
+document.querySelector('button#test').addEventListener('click', userDeletion);
