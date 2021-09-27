@@ -7,7 +7,7 @@ function testAPI() {                      // Testing Graph API after login.  See
         'GET',
         {"fields":"id,name,first_name,last_name,friends,hometown"},
         function(res) {
-            // let data = { res };
+            console.log(res);
             let options = {
                 method: 'POST',
                 headers: {
